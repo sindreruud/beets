@@ -208,7 +208,6 @@ class DiscogsPlugin(BeetsPlugin):
         if extra_tags:
             for tag, value in extra_tags.items():
                 key = FIELDS_TO_DISCOGS_KEYS[tag]
-                #value = str(value).lower().strip()
                 if value:
                     query_filters[key] = value
         
@@ -354,18 +353,10 @@ class DiscogsPlugin(BeetsPlugin):
         # can also negate an otherwise positive result.
         query = re.sub(r"(?i)\b(CD|disc|vinyl)\s*\d+", "", query)
 
-        # Adapting for discogs key="value" format and adding to query
-        #filters_str = ', '.join(f'{key}="{value}"' for key, value in query_filters.items())
-
-        # Completing the query
-        #if filters_str:
-        #    query = f"\"{query}\", type=\"release\", {filters_str}"
-        #else:
-        #    query = f"\"{query}\", type=\"release\""
-
         # debug logging
-        self._log.debug("(get_albums) filters_str: {}", query_filters)
-        self._log.debug("(get_albums) Final query: {}", query)
+        self._log.debug("(get_albums) Query: {}", query)
+        self._log.debug("(get_albums) query_filters: {}", query_filters)
+        self._log.debug("(get_albums) Final API call: self.discogs_client.search({}, type='release', {})", query, query_filters)
 
         try:
             releases = self.discogs_client.search(query, type="release", **query_filters).page(1)
