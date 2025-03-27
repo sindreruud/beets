@@ -359,9 +359,9 @@ class DiscogsPlugin(BeetsPlugin):
 
         # Completing the query
         if filters_str:
-            query = f"{query}, type=\"release\", {filters_str}"
+            query = f"\"{query}\", type=\"release\", {filters_str}"
         else:
-            query = f"{query}, type=\"release\""
+            query = f"\"{query}\", type=\"release\""
 
 
         # debug logging
