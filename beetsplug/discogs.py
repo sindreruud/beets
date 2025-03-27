@@ -208,22 +208,16 @@ class DiscogsPlugin(BeetsPlugin):
         if extra_tags:
             for tag, value in extra_tags.items():
                 key = FIELDS_TO_MB_KEYS[tag]
-                value = str(value).lower().strip()
+                #value = str(value).lower().strip()
                 if value:
                     query_filters[key] = value
         
-        # Adapting for discogs key="value" format and adding to query
-        filters_str = ', '.join(f'{key}="{value}"' for key, value in query_filters.items())
-        if filters_str:
-            query = f"{query}, {filters_str}"
-        
         # Debugging log: Print query and query_filters
-        self._log.debug("query: {}", query)
-        self._log.debug("query_filters: {}", query_filters)
-        self._log.debug("filters_str: {}", filters_str)
+        self._log.debug("(candidates) query_filters: {}", query_filters)
+        self._log.debug("(candidates) query: {}", query)
         
         try:
-            return self.get_albums(query)
+            return self.get_albums(query, **query_filters)
         except DiscogsAPIError as e:
             self._log.debug("API Error: {0} (query: {1})", e, query)
             if e.status_code == 401:
@@ -349,7 +343,7 @@ class DiscogsPlugin(BeetsPlugin):
             return None
         return self.get_album_info(result)
 
-    def get_albums(self, query):
+    def get_albums(self, query, **query_filters):
         """Returns a list of AlbumInfo objects for a discogs search query."""
         # Strip non-word characters from query. Things like "!" and "-" can
         # cause a query to return no results, even if they match the artist or
@@ -359,6 +353,15 @@ class DiscogsPlugin(BeetsPlugin):
         # Strip medium information from query, Things like "CD1" and "disk 1"
         # can also negate an otherwise positive result.
         query = re.sub(r"(?i)\b(CD|disc|vinyl)\s*\d+", "", query)
+
+        # Adapting for discogs key="value" format and adding to query
+        filters_str = ', '.join(f'{key}="{value}"' for key, value in query_filters.items())
+        if filters_str:
+            query = f"{query}, {filters_str}"
+
+        # debug logging
+        self._log.debug("(get_albums) filters_str: {}", filters_str)
+        self._log.debug("(get_albums) Final query: {}", query)
 
         try:
             releases = self.discogs_client.search(query, type="release").page(1)
