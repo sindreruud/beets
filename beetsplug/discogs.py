@@ -364,7 +364,7 @@ class DiscogsPlugin(BeetsPlugin):
         #    query = f"\"{query}\", type=\"release\""
 
         # debug logging
-        self._log.debug("(get_albums) filters_str: {}", **query_filters)
+        self._log.debug("(get_albums) filters_str: {}", query_filters)
         self._log.debug("(get_albums) Final query: {}", query)
 
         try:
