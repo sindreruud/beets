@@ -358,11 +358,12 @@ class DiscogsPlugin(BeetsPlugin):
         filters_str = ', '.join(f'{key}="{value}"' for key, value in query_filters.items())
 
         # Completing the query
-        if filters_str:
-            query = f"\"{query}\", type=\"release\", {filters_str}"
-        else:
-            query = f"\"{query}\", type=\"release\""
+        #if filters_str:
+        #    query = f"\"{query}\", type=\"release\", {filters_str}"
+        #else:
+        #    query = f"\"{query}\", type=\"release\""
 
+        query = f"\"{query}\", type=\"release\""
 
         # debug logging
         self._log.debug("(get_albums) filters_str: {}", filters_str)
