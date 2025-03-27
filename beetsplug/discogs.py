@@ -45,7 +45,7 @@ USER_AGENT = f"beets/{beets.__version__} +https://beets.io/"
 API_KEY = "rAzVUQYRaoFjeBjyWuWZ"
 API_SECRET = "plxtUTqoCzwxZpqdPysCwGuBSmZNdZVy"
 
-FIELDS_TO_MB_KEYS = {
+FIELDS_TO_DISCOGS_KEYS = {
     "catalognum": "catno",
     "country": "country",
     "label": "label",
@@ -207,7 +207,7 @@ class DiscogsPlugin(BeetsPlugin):
         query_filters = {}
         if extra_tags:
             for tag, value in extra_tags.items():
-                key = FIELDS_TO_MB_KEYS[tag]
+                key = FIELDS_TO_DISCOGS_KEYS[tag]
                 #value = str(value).lower().strip()
                 if value:
                     query_filters[key] = value
@@ -355,7 +355,7 @@ class DiscogsPlugin(BeetsPlugin):
         query = re.sub(r"(?i)\b(CD|disc|vinyl)\s*\d+", "", query)
 
         # Adapting for discogs key="value" format and adding to query
-        filters_str = ', '.join(f'{key}="{value}"' for key, value in query_filters.items())
+        #filters_str = ', '.join(f'{key}="{value}"' for key, value in query_filters.items())
 
         # Completing the query
         #if filters_str:
@@ -363,14 +363,12 @@ class DiscogsPlugin(BeetsPlugin):
         #else:
         #    query = f"\"{query}\", type=\"release\""
 
-        query = f"\"{query}\", type=\"release\""
-
         # debug logging
-        self._log.debug("(get_albums) filters_str: {}", filters_str)
+        self._log.debug("(get_albums) filters_str: {}", **query_filters)
         self._log.debug("(get_albums) Final query: {}", query)
 
         try:
-            releases = self.discogs_client.search(query).page(1)
+            releases = self.discogs_client.search(query, type="release", **query_filters).page(1)
 
         except CONNECTION_ERRORS:
             self._log.debug(
