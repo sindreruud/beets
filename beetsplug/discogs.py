@@ -45,6 +45,15 @@ USER_AGENT = f"beets/{beets.__version__} +https://beets.io/"
 API_KEY = "rAzVUQYRaoFjeBjyWuWZ"
 API_SECRET = "plxtUTqoCzwxZpqdPysCwGuBSmZNdZVy"
 
+FIELDS_TO_MB_KEYS = {
+    "catalognum": "catno",
+    "country": "country",
+    "label": "label",
+    "barcode": "barcode",
+    "media": "format",
+    "year": "year",
+}
+
 # Exceptions that discogs_client should really handle but does not.
 CONNECTION_ERRORS = (
     ConnectionError,
@@ -193,6 +202,20 @@ class DiscogsPlugin(BeetsPlugin):
             query = album
         else:
             query = f"{artist} {album}"
+
+        # Additional search cues from existing metadata.
+        query_filters = {}
+        if extra_tags:
+            for tag, value in extra_tags.items():
+                key = FIELDS_TO_MB_KEYS[tag]
+                value = str(value).lower().strip()
+                if value:
+                    query_filters[key] = value
+        
+        # Debugging log: Print query and query_filters
+        self._log.debug("query: {}", query)
+        self._log.debug("query_filters: {}", query_filters)
+        
         try:
             return self.get_albums(query)
         except DiscogsAPIError as e:
