@@ -84,6 +84,7 @@ class DiscogsPlugin(BeetsPlugin):
                 "separator": ", ",
                 "index_tracks": False,
                 "append_style_genre": False,
+                "extra_tags": []
             }
         )
         self.config["apikey"].redact = True

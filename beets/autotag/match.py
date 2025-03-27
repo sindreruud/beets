@@ -545,7 +545,7 @@ def tag_album(
             extra_tags = {k: v for (k, v) in likelies.items() if k in tag_list}
             log.debug("Additional search terms: {0}", extra_tags)
         
-        if "extra_tags" in config["discogs"]:
+        if config["discogs"]["extra_tags"]:
             tag_list = config["discogs"]["extra_tags"].get()
             extra_tags = {k: v for (k, v) in likelies.items() if k in tag_list}
             log.debug("Additional search terms (discogs): {0}", extra_tags)

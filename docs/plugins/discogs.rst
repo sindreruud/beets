@@ -99,6 +99,23 @@ whereas with ``index_tracks`` disabled you'd get:
 
 This option is useful when importing classical music.
 
+extra_tags
+-------------
+
+By default, this plugin will use only the artist and album-name to query Discogs. Additional tags to be queried can be supplied with the
+``extra_tags`` setting. For example::
+
+    discogs:
+        extra_tags: [year, catalognum, country, media, label]
+
+This setting should improve the autotagger accuracy if the metadata with the
+given tags match the metadata returned by Discogs.
+
+Note that the only tags supported by this setting are the ones listed in the
+above example.
+
+Default: ``[]`` 
+
 Other configurations available under ``discogs:`` are:
 
 - **append_style_genre**: Appends the Discogs style (if found) to the genre tag. This can be useful if you want more granular genres to categorize your music.

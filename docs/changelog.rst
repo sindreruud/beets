@@ -21,6 +21,9 @@ New features:
   when fetching lyrics.
 * :doc:`plugins/lyrics`: Rewrite lyrics translation functionality to use Azure
   AI Translator API and add relevant instructions to the documentation.
+* :doc:`plugins/discogs`: Add new configuration option ``extra_tags``. Lets
+  you use more metadata in Discogs queries to further narrow the search.
+  
 
 Bug fixes:
 
