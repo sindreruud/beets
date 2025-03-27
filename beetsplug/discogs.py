@@ -356,15 +356,20 @@ class DiscogsPlugin(BeetsPlugin):
 
         # Adapting for discogs key="value" format and adding to query
         filters_str = ', '.join(f'{key}="{value}"' for key, value in query_filters.items())
-        #if filters_str:
-        #    query = f"{query}, {filters_str}"
+
+        # Completing the query
+        if filters_str:
+            query = f"{query}, type=\"release\", {filters_str}"
+        else:
+            query = f"{query}, type=\"release\""
+
 
         # debug logging
         self._log.debug("(get_albums) filters_str: {}", filters_str)
-        #self._log.debug("(get_albums) Final query: {}", query)
+        self._log.debug("(get_albums) Final query: {}", query)
 
         try:
-            releases = self.discogs_client.search(query, filters_str, type="release").page(1)
+            releases = self.discogs_client.search(query).page(1)
 
         except CONNECTION_ERRORS:
             self._log.debug(
